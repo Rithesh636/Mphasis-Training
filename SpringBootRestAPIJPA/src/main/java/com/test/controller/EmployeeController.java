@@ -17,8 +17,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.test.entity.Employee;
+import com.test.repository.EmployeeRepository;
 import com.test.service.EmployeeService;
 
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
@@ -29,6 +31,9 @@ public class EmployeeController {
 	@Autowired
 	private EmployeeService service;
 	
+	@Autowired
+	private EmployeeRepository repo ;
+	
 	@PostMapping(value = "/create")
 	public ResponseEntity<Employee> createEmployee(@RequestBody Employee emp){
 		Employee obj = service.saveEmployee(emp);
@@ -37,11 +42,12 @@ public class EmployeeController {
 			return new ResponseEntity<Employee>(obj, HttpStatus.CREATED);
 		}
 		else {
-			return new ResponseEntity<Employee>(obj, HttpStatus.NO_CONTENT);
+			return new ResponseEntity<Employee>(obj, HttpStatus.NOT_FOUND);
 		}
 	}
 	
 	@GetMapping("/list")
+	@Operation(summary = "Listing all employee")
 	public ResponseEntity<List<Employee>> listAllEmployee(){
 		List<Employee> list = service.getAllEmployee();
 		
@@ -49,11 +55,12 @@ public class EmployeeController {
 			return new ResponseEntity<>(list, HttpStatus.OK);
 		}
 		else {
-			return new ResponseEntity<>(list, HttpStatus.NO_CONTENT);
+			return new ResponseEntity<>(list, HttpStatus.NOT_FOUND);
 		}
 	}
 	
 	@GetMapping(value = "/{id}")
+	@Operation(summary = "Getting Employee By Id")
 	public ResponseEntity<Optional<Employee>> getEmployeeById(@PathVariable int id){
 		Optional<Employee> em = service.getEmployeeByid(id);
 		
@@ -61,7 +68,7 @@ public class EmployeeController {
 			return new ResponseEntity<>(em, HttpStatus.OK);
 		}
 		else {
-			return new ResponseEntity<>(em, HttpStatus.NO_CONTENT);
+			return new ResponseEntity<>(em, HttpStatus.NOT_FOUND);
 		}
 		
 	}
@@ -88,9 +95,46 @@ public class EmployeeController {
 			return new ResponseEntity<>(list, HttpStatus.OK);
 		}
 		else {
-			return new ResponseEntity<>(list, HttpStatus.NO_CONTENT);
+			return new ResponseEntity<>(list, HttpStatus.NOT_FOUND);
+		}
+	}
+	
+	@GetMapping("/byname/{name}")
+	@Operation(summary = "Get Employee by name")
+	public ResponseEntity<List<Employee>> getEmployeeByName(@PathVariable String name){
+		List<Employee> list = repo.getEmployeeByName(name);
+		
+		if(list.size() > 0) {
+			return new ResponseEntity<>(list, HttpStatus.OK);
+		}
+		else {
+			return new ResponseEntity<>(list, HttpStatus.NOT_FOUND);
 		}
 	}
 
+	@GetMapping("/bycompany/{company}")
+	@Operation(summary = "Get Employee by Company")
+	public ResponseEntity<Employee> getEmployeeByCompany(@PathVariable String company){
+		List<Employee> list = repo.getEmployeeByCompany(company);
+		
+		if(list.size() > 0) {
+			return new ResponseEntity<>(list, HttpStatus.OK);
+		}
+		else {
+			return new ResponseEntity<>(list, HttpStatus.NOT_FOUND);
+		}
+	}
+	
+	@GetMapping("/byorder")
+	public ResponseEntity<List<Employee>> getAllEmployeesByNameASC(){
+		List<Employee> list = repo.getEmployeesByNameASC();
+		
+		if(list.size() > 0) {
+			return new ResponseEntity<>(list, HttpStatus.OK);
+		}
+		else {
+			return new ResponseEntity<>(list, HttpStatus.BAD_REQUEST);
+		}
+	}
 
 }
