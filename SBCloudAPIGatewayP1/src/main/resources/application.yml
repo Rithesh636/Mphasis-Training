@@ -1,0 +1,7 @@
+spring:
+  application:
+    name: SBCloudAPIGatewayP1
+
+server:
+  port: 7788
+
