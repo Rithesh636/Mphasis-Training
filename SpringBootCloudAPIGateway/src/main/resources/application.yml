@@ -1,0 +1,9 @@
+#spring.application.name=SpringBootCloudAPIGateway
+
+spring:
+  application:
+    name: SpringBootCloudAPIGatewayP1
+
+server:
+  port: 8899
+
