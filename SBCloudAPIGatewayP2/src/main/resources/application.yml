@@ -1,0 +1,8 @@
+spring:
+  application:
+    name: SpringBootCloudAPIGatewayP2
+
+server:
+  port: 9988
+
+
